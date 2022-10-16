@@ -14,22 +14,23 @@ def ping(host, port):
         # resps.append((seq, server_reply, rtt))
         
         #Fill in start
+        clientSocket.settimeout(1)
+        
         begin = time.time()
         message = 'Ping {} {}'.format(seq, str(begin))
         clientSocket.sendto(message.encode(), (host, port))
         
-        # Timeout after 1 second of no response
-        if time.time() - begin > 1:
+        try:
+            modifiedMessage, serverAddress = clientSocket.recvfrom(1024)
+            end = time.time()
+            
+            server_reply = modifiedMessage.decode()
+            rtt = end - begin
+            
+            resps.append((seq, server_reply, rtt))
+            
+        except timeout:
             resps.append((seq, 'Request timed out', 0))
-            continue
-        
-        modifiedMessage, serverAddress = clientSocket.recv(1024)
-        end = time.time()
-        
-        server_reply = modifiedMessage.decode()
-        rtt = end - begin
-        
-        resps.append((seq, server_reply, rtt))
         #Fill in end
     
     clientSocket.close()
