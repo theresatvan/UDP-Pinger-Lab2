@@ -17,7 +17,7 @@ def ping(host, port):
         clientSocket.settimeout(1)
         
         begin = time.time()
-        message = 'Ping {} {}'.format(seq, str(begin))
+        message = 'Ping {0} {1}'.format(seq, str(begin))
         clientSocket.sendto(message.encode(), (host, port))
         
         try:
